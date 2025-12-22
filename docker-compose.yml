@@ -1,0 +1,13 @@
+version: "3.9"
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - DB_FILE=./data/notes.sqlite
+      - CORS_ORIGIN=http://localhost:5173
+    volumes:
+      - ./backend/data:/app/data
