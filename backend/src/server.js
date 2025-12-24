@@ -7,9 +7,9 @@ const { validateNotePayload } = require("./validate");
 const app = express();
 
 const PORT = process.env.PORT || 3000;
-const CORS_ORIGIN = process.env.CORS_ORIGIN || "http://localhost:5173";
+const CORS_ORIGIN = process.env.CORS_ORIGIN || "*";
 
-app.use(cors({ origin: CORS_ORIGIN }));
+app.use(cors({ origin: CORS_ORIGIN === "*" ? true : CORS_ORIGIN }));
 app.use(express.json({ limit: "1mb" }));
 
 // Health check
@@ -39,7 +39,10 @@ app.post("/api/notes", (req, res) => {
   const { ok, errors } = validateNotePayload(req.body);
   if (!ok) return res.status(400).json({ message: "Validation failed", errors });
 
-  const note = db.createNote({ title: req.body.title.trim(), content: req.body.content.trim() });
+  const note = db.createNote({
+    title: req.body.title.trim(),
+    content: req.body.content.trim()
+  });
   res.status(201).json(note);
 });
 
@@ -75,4 +78,3 @@ app.delete("/api/notes/:id", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-
