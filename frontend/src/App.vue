@@ -9,7 +9,7 @@
 
         <div class="brand-text">
           <h1>File Notes</h1>
-          <p class="subtitle">Simple document management • Vue + Express + SQLite</p>
+          <p class="subtitle">Document Management/p>
 
           <div class="meta-row">
             <span class="pill">
