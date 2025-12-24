@@ -169,22 +169,18 @@ function closeConfirm() {
 
 async function confirmDelete() {
   if (!toDelete.value) return;
-
   deleting.value = true;
-
   try {
     await api.deleteNote(toDelete.value.id);
-    confirmOpen.value = false;
-    toDelete.value = null;
     showToast("Note deleted 🗑️");
     await fetchAll();
+    closeConfirm();
   } catch (e) {
     showToast(e.message || "Delete failed");
   } finally {
     deleting.value = false;
   }
 }
-
 
 onMounted(fetchAll);
 </script>
