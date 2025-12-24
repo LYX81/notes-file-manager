@@ -4,12 +4,12 @@
     <header class="topbar">
       <div class="brand">
         <div class="logo">
-        <img src="./assets/file1.png" class="logo" />
+        <img src="./assets/file.png" class="logo" />
         </div>
 
         <div class="brand-text">
           <h1>File Notes</h1>
-          <p class="subtitle">Document Management/p>
+          <p class="subtitle">Document Management</p>
 
           <div class="meta-row">
             <span class="pill">
