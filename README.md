@@ -39,28 +39,86 @@ The UI follows a **clean and minimal design**, focusing on clarity, usability, a
 
 ---
 
-## 🚀 How to Run Locally
+## 🌍 Deployment (Railway)
 
-### 1️⃣ Backend Setup
+This application is deployed on **Railway** as two services:
+
+- **Frontend (Vue + Vite)**: root directory set to `frontend`
+- **Backend (Node + Express + SQLite)**: root directory set to `backend`
+
+---
+
+### 🚀 Backend Deployment (Railway)
+**Deployment Steps:**
+1. Create a new project on Railway.
+2. Connect the GitHub repository.
+3. Select the backend service.
+4. Set the start command:
+
 ```bash
-cd backend
-npm install
 npm start
 ```
-> Backend server runs at: http://localhost:3000
+5. Configure environment variables if required.
+6. Deploy the service.
 
-### 2️⃣ Frontend Setup
+After deployment, Railway provides a public backend URL, for example:
+> https://notes-file-manager-production.up.railway.app
+
+---
+
+### 🚀 Frontend Deployment (Railway)
+**Deployment Steps:**
+1. Add a new service in the same Railway project.
+2. Connect the frontend folder from the GitHub repository.
+3. Set the build command:
+
 ```bash
-cd frontend
-npm install
-npm run dev
+npm install && npm run build
 ```
-> Frontend runs at: http://localhost:5173
 
-## 🌍 Deployment Process
+4. Set the start command:
 
-- **Frontend:** Deployed using Railway
-- **Backend:** Deployed using Railway   
+```bash
+npm run preview -- --host 0.0.0.0 --port $PORT
+```
+5. Configure the environment variable for the backend API URL.
+6. Deploy the frontend service.
+
+Railway will generate a public URL for the frontend, for example:
+>https://site-production-fbbb.up.railway.app
+
+---
+
+### 🔗 Environment Variables
+
+The frontend is configured to communicate with the deployed backend API using an environment variable.
+
+Example VITE_API_BASE_URL:
+>https://notes-file-manager-production.up.railway.app
+
+---
+
+## 🔗 API Endpoints
+
+All backend routes are prefixed with `/api`.
+
+| Method | Endpoint            | Description          |
+|--------|---------------------|----------------------|
+| GET    | `/api/notes`        | Retrieve all notes   |
+| GET    | `/api/notes/:id`    | Retrieve a note by ID |
+| POST   | `/api/notes`        | Create a new note    |
+| PUT    | `/api/notes/:id`    | Update a note        |
+| DELETE | `/api/notes/:id`    | Delete a note        |
+
+---
+
+## ✅ Conclusion
+
+This project is fully deployed using **Railway** and demonstrates:
+- A cloud-hosted Vue.js frontend
+- A RESTful Node.js backend
+- Persistent SQLite database storage
+- End-to-end CRUD functionality accessible via public URLs
 
 ---
 
@@ -101,5 +159,3 @@ Generated sample routes and database logic.
 To ensure data integrity and reliable backend behavior.
 
 ---
-
-
