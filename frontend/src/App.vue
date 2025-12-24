@@ -1,116 +1,64 @@
-<template>
-  <div class="container">
-    <header class="topbar">
-      <div>
-        <h1>Simple File Management (Notes)</h1>
-        <p class="subtitle">CRUD with Vue + Express + SQLite</p>
-      </div>
-
-      <div class="actions">
-        <input v-model="query" placeholder="Search notes..." />
-        <button @click="openCreate">+ New Note</button>
-      </div>
-    </header>
-
-    <p class="status">
-      {{ filtered.length }} note(s) • API: {{ apiStatus }}
-    </p>
-
-    <div class="grid">
-      <div class="empty">
-        <h3>No notes yet</h3>
-        <p>Create your first note to get started.</p>
-      </div>
-
-
-      <NoteCard
-        v-for="n in filtered"
-        :key="n.id"
-        :note="n"
-        @edit="openEdit"
-        @delete="askDelete"
-      />
-    </div>
-
-    <NoteModal
-      :open="modalOpen"
-      :note="selected"
-      :saving="saving"
-      @close="closeModal"
-      @submit="submitNote"
-    />
-
-    <ConfirmDialog
-      :open="confirmOpen"
-      :busy="deleting"
-      title="Delete note?"
-      :message="confirmMessage"
-      confirmText="Delete"
-      @cancel="closeConfirm"
-      @confirm="confirmDelete"
-    />
-
-    <div v-if="toast" class="toast">{{ toast }}</div>
-  </div>
-</template>
-
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { api } from "./api";
 import NoteCard from "./components/NoteCard.vue";
 import NoteModal from "./components/NoteModal.vue";
 import ConfirmDialog from "./components/ConfirmDialog.vue";
 
 const notes = ref([]);
-const query = ref("");
-const apiStatus = ref("checking...");
-const toast = ref("");
-
-const modalOpen = ref(false);
-const confirmOpen = ref(false);
-const selected = ref(null);
-const toDelete = ref(null);
-
+const loading = ref(true);
 const saving = ref(false);
 const deleting = ref(false);
 
+const query = ref("");
+const toast = ref("");
+const apiStatus = ref("");
+
+const modalOpen = ref(false);
+const selected = ref(null);
+
+const confirmOpen = ref(false);
+const toDelete = ref(null);
+
 const filtered = computed(() => {
-  const q = query.value.toLowerCase();
-  return notes.value.filter(
-    n =>
-      n.title.toLowerCase().includes(q) ||
-      n.content.toLowerCase().includes(q)
+  const q = query.value.trim().toLowerCase();
+  if (!q) return notes.value;
+  return notes.value.filter(n =>
+    (n.title + n.content).toLowerCase().includes(q)
   );
 });
 
 const confirmMessage = computed(() =>
   toDelete.value
     ? `This will permanently delete:\n\n"${toDelete.value.title}"`
-    : ""
+    : "Are you sure?"
 );
 
 function showToast(msg) {
   toast.value = msg;
-  setTimeout(() => (toast.value = ""), 2500);
+  setTimeout(() => (toast.value = ""), 2200);
 }
 
-async function loadNotes() {
+async function fetchAll() {
+  loading.value = true;
   try {
-    await api.health();
-    apiStatus.value = "online";
+    const health = await api.health();
+    apiStatus.value = health?.ok ? "online" : "offline";
     notes.value = await api.listNotes();
   } catch {
     apiStatus.value = "offline";
+  } finally {
+    loading.value = false;
   }
 }
 
 function openCreate() {
-  selected.value = null;
+  selected.value = null;        
   modalOpen.value = true;
 }
 
 function openEdit(note) {
-  selected.value = note;
+  selected.value = { ...note };
   modalOpen.value = true;
 }
 
@@ -119,17 +67,15 @@ function closeModal() {
   selected.value = null;
 }
 
-async function submitNote(payload) {
+async function handleSubmit(payload) {
   saving.value = true;
   try {
-    if (selected.value) {
-      await api.updateNote(selected.value.id, payload);
-      showToast("Note updated");
-    } else {
-      await api.createNote(payload);
-      showToast("Note created");
-    }
-    await loadNotes();
+    selected.value?.id
+      ? await api.updateNote(selected.value.id, payload)
+      : await api.createNote(payload);
+
+    showToast("Saved successfully ✅");
+    await fetchAll();
     closeModal();
   } finally {
     saving.value = false;
@@ -149,15 +95,16 @@ function closeConfirm() {
 async function confirmDelete() {
   if (!toDelete.value) return;
   deleting.value = true;
+
   try {
     await api.deleteNote(toDelete.value.id);
-    closeConfirm();
-    showToast("Note deleted");
-    await loadNotes();
+    showToast("Note deleted 🗑️");
+    await fetchAll();
   } finally {
     deleting.value = false;
+    closeConfirm();   
   }
 }
 
-onMounted(loadNotes);
+onMounted(fetchAll);
 </script>
