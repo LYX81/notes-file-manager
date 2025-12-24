@@ -6,7 +6,7 @@ const { validateNotePayload } = require("./validate");
 
 const app = express();
 
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 3000;
 const CORS_ORIGIN = process.env.CORS_ORIGIN || "http://localhost:5173";
 
 app.use(cors({ origin: CORS_ORIGIN }));
@@ -73,6 +73,6 @@ app.delete("/api/notes/:id", (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`✅ Backend running on http://localhost:${PORT}`);
-  console.log(`CORS allowed origin: ${CORS_ORIGIN}`);
+  console.log(`Server running on port ${PORT}`);
 });
+
