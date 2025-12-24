@@ -4,7 +4,7 @@
     <header class="topbar">
       <div class="brand">
         <div class="logo">
-        <img src="./assets/file.png" class="logo" />
+        <img src="./assets/file1.png" class="logo" />
         </div>
 
         <div class="brand-text">
