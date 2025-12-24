@@ -35,8 +35,17 @@
     <div class="grid">
       <div
         v-if="!loading && filtered.length === 0"
-        class="card empty"
+        class="empty-state"
       >
+        <div class="empty-card">
+          <h3>No notes yet</h3>
+          <p>Create your first note to get started.</p>
+          <button class="btn primary" @click="openCreate">
+            + Create your first note
+          </button>
+        </div>
+      </div>
+
         <h3>No notes yet</h3>
         <p>Create your first note to get started.</p>
       </div>

@@ -44,10 +44,11 @@ body {
 
 .topbar {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: 14px;
-  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 18px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--border);
 }
 
 .brand {
@@ -245,3 +246,38 @@ textarea:focus {
 pre {
   white-space: pre-wrap;
 }
+
+/* ---------- EMPTY STATE ---------- */
+.empty-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 80px;
+}
+
+.empty-card {
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0.12),
+    rgba(255,255,255,0.06)
+  );
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 28px 32px;
+  text-align: center;
+  max-width: 420px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(16px);
+}
+
+.empty-card h3 {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+
+.empty-card p {
+  margin: 0 0 18px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
