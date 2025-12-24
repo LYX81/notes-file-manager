@@ -17,9 +17,11 @@
     </p>
 
     <div class="grid">
-      <div v-if="filtered.length === 0" class="empty">
-        No notes found
+      <div class="empty">
+        <h3>No notes yet</h3>
+        <p>Create your first note to get started.</p>
       </div>
+
 
       <NoteCard
         v-for="n in filtered"
