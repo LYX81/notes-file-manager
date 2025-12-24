@@ -1,6 +1,6 @@
 <template>
   <div class="card">
-    <h4>{{ note.title }}</h4>
+    <h3 class="title">{{ note.title }}</h3>
 
     <p class="content">
       {{ note.content }}
@@ -19,24 +19,9 @@
 
 <script setup>
 defineProps({
-  note: { type: Object, required: true }
+  note: {
+    type: Object,
+    required: true
+  }
 });
-
-defineEmits(["edit", "delete"]);
 </script>
-
-<style scoped>
-.card {
-  background: #111827;
-  padding: 16px;
-  border-radius: 12px;
-}
-.content {
-  white-space: pre-line;
-  margin: 10px 0;
-}
-.actions {
-  display: flex;
-  gap: 8px;
-}
-</style>

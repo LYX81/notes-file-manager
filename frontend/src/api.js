@@ -1,29 +1,16 @@
-const API_BASE =
-  import.meta.env.VITE_API_BASE ||
-  "https://notes-file-manager-production.up.railway.app";
+const API_BASE = import.meta.env.VITE_API_BASE;
 
 async function request(path, options = {}) {
   const res = await fetch(`${API_BASE}${path}`, {
-    headers: {
-      "Content-Type": "application/json",
-      ...(options.headers || {})
-    },
+    headers: { "Content-Type": "application/json" },
     ...options
   });
 
-  const contentType = res.headers.get("content-type") || "";
-  const data = contentType.includes("application/json")
-    ? await res.json()
-    : await res.text();
+  const data = await res.json().catch(() => ({}));
 
   if (!res.ok) {
-    const msg =
-      typeof data === "object" && data?.message
-        ? data.message
-        : "Request failed";
-    const err = new Error(msg);
+    const err = new Error(data.message || "Request failed");
     err.data = data;
-    err.status = res.status;
     throw err;
   }
 
@@ -34,17 +21,9 @@ export const api = {
   health: () => request("/api/health"),
   listNotes: () => request("/api/notes"),
   createNote: (payload) =>
-    request("/api/notes", {
-      method: "POST",
-      body: JSON.stringify(payload)
-    }),
+    request("/api/notes", { method: "POST", body: JSON.stringify(payload) }),
   updateNote: (id, payload) =>
-    request(`/api/notes/${id}`, {
-      method: "PUT",
-      body: JSON.stringify(payload)
-    }),
+    request(`/api/notes/${id}`, { method: "PUT", body: JSON.stringify(payload) }),
   deleteNote: (id) =>
-    request(`/api/notes/${id}`, {
-      method: "DELETE"
-    })
+    request(`/api/notes/${id}`, { method: "DELETE" })
 };
