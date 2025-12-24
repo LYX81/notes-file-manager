@@ -130,7 +130,7 @@ body{
   font-size:14px;
 }
 .search-input{
-  padding-left:34px;
+  padding-left:34px !important;
 }
 
 /* Inputs */
