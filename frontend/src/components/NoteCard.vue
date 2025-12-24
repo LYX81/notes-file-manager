@@ -1,6 +1,13 @@
 <template>
-  <div class="card">
-    <h3>{{ note.title }}</h3>
+  <div class="card note-card">
+    <div class="note-head">
+      <div class="file-badge">DOC</div>
+      <div class="note-title-wrap">
+        <h3 class="note-title">{{ note.title }}</h3>
+        <p class="note-subtitle">Document</p>
+      </div>
+    </div>
+
     <p class="content">{{ note.content }}</p>
 
     <div class="card-actions">

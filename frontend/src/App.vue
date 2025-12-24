@@ -4,19 +4,34 @@
     <header class="topbar">
       <div class="brand">
         <div class="logo"></div>
-        <div>
-          <h1>Simple File Management (Notes)</h1>
-          <p class="subtitle">CRUD with Vue + Express + SQLite</p>
-          <p class="status">{{ notes.length }} note(s) • API: {{ apiStatus }}</p>
+
+        <div class="brand-text">
+          <h1>File Notes</h1>
+          <p class="subtitle">Simple document management • Vue + Express + SQLite</p>
+
+          <div class="meta-row">
+            <span class="pill">
+              <span class="dot" :class="apiStatus === 'online' ? 'ok' : 'bad'"></span>
+              API: {{ apiStatus }}
+            </span>
+
+            <span class="pill soft">
+              {{ notes.length }} note(s)
+            </span>
+          </div>
         </div>
       </div>
 
       <div class="actions">
-        <input
-          class="input"
-          v-model="query"
-          placeholder="Search notes..."
-        />
+        <div class="search">
+          <span class="search-icon">⌕</span>
+          <input
+            class="input search-input"
+            v-model="query"
+            placeholder="Search notes..."
+          />
+        </div>
+
         <button class="btn primary" @click="openCreate">
           + New Note
         </button>
@@ -25,9 +40,13 @@
 
     <!-- Notes -->
     <section class="grid">
-      <div v-if="!loading && filtered.length === 0" class="empty">
-        <h3>No notes yet</h3>
-        <p>Create your first note to get started.</p>
+      <div v-if="!loading && filtered.length === 0" class="empty-state">
+        <div class="empty-card">
+          <div class="empty-icon">🗂️</div>
+          <h3>No notes yet</h3>
+          <p>Create your first note to start managing your files.</p>
+          <button class="btn primary" @click="openCreate">Create Note</button>
+        </div>
       </div>
 
       <NoteCard

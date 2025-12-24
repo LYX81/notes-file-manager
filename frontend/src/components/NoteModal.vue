@@ -1,24 +1,33 @@
 <template>
   <div v-if="open" class="overlay">
     <div class="modal">
-      <h2>New Note</h2>
+      <div class="modal-head">
+        <h2>{{ note?.id ? "Edit Note" : "New Note" }}</h2>
+        <button class="icon-btn" @click="$emit('close')" aria-label="Close">✕</button>
+      </div>
 
-      <input
-        class="input"
-        placeholder="Title"
-        v-model="title"
-      />
+      <div class="field">
+        <label class="label">Title</label>
+        <input
+          class="input"
+          placeholder="E.g. Meeting Notes"
+          v-model="title"
+        />
+      </div>
 
-      <textarea
-        class="textarea"
-        placeholder="Content"
-        v-model="content"
-      />
+      <div class="field">
+        <label class="label">Content</label>
+        <textarea
+          class="textarea"
+          placeholder="Write something..."
+          v-model="content"
+        />
+      </div>
 
       <div class="modal-actions">
         <button class="btn ghost" @click="$emit('close')">Cancel</button>
         <button class="btn primary" :disabled="saving" @click="submit">
-          Save
+          {{ saving ? "Saving..." : "Save" }}
         </button>
       </div>
     </div>
