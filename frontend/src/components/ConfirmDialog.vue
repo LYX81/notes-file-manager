@@ -1,17 +1,27 @@
 <template>
-  <div v-if="open" @click.self="$emit('cancel')" style="position:fixed; inset:0; background:rgba(0,0,0,0.55); display:flex; align-items:center; justify-content:center; padding:16px;">
-    <div class="card" style="width:min(520px, 96vw);">
-      <div style="font-weight:800; font-size:15px; margin-bottom:6px;">
-        {{ title }}
-      </div>
-      <div class="muted" style="font-size:13px; line-height:1.5; white-space:pre-wrap;">
-        {{ message }}
-      </div>
+  <div class="overlay">
+    <div class="dialog">
+      <h3 class="title">{{ title }}</h3>
 
-      <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:14px; flex-wrap:wrap;">
-        <button class="btn" @click="$emit('cancel')" :disabled="busy">Cancel</button>
-        <button class="btn danger" @click="$emit('confirm')" :disabled="busy">
-          {{ busy ? "Deleting..." : confirmText }}
+      <p class="message" v-if="message">
+        {{ message }}
+      </p>
+
+      <div class="actions">
+        <button
+          class="btn"
+          :disabled="busy"
+          @click.stop="$emit('cancel')"
+        >
+          Cancel
+        </button>
+
+        <button
+          class="btn danger"
+          :disabled="busy"
+          @click.stop="$emit('confirm')"
+        >
+          {{ confirmText }}
         </button>
       </div>
     </div>
@@ -20,12 +30,41 @@
 
 <script setup>
 defineProps({
-  open: { type: Boolean, default: false },
-  busy: { type: Boolean, default: false },
-  title: { type: String, default: "Confirm" },
-  message: { type: String, default: "Are you sure?" },
-  confirmText: { type: String, default: "Confirm" }
+  title: { type: String, required: true },
+  message: { type: String, default: "" },
+  confirmText: { type: String, default: "Confirm" },
+  busy: { type: Boolean, default: false }
 });
 
 defineEmits(["confirm", "cancel"]);
 </script>
+
+<style scoped>
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.dialog {
+  background: #111827;
+  padding: 20px;
+  border-radius: 14px;
+  width: 420px;
+}
+.title {
+  margin: 0 0 10px;
+}
+.message {
+  white-space: pre-line;
+  margin-bottom: 16px;
+}
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+</style>

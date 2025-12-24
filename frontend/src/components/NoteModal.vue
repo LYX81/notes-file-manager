@@ -1,92 +1,95 @@
 <template>
-  <div v-if="open" @click.self="close" style="position:fixed; inset:0; background:rgba(0,0,0,0.55); display:flex; align-items:center; justify-content:center; padding:16px;">
-    <div class="card" style="width:min(720px, 96vw);">
-      <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px;">
-        <div>
-          <div style="font-weight:800; font-size:15px;">
-            {{ modeTitle }}
-          </div>
-          <div class="muted" style="font-size:12px;">
-            Title and content are required.
-          </div>
-        </div>
-
-        <button class="btn ghost" @click="close">✕</button>
+  <div v-if="open" class="overlay">
+    <div class="modal">
+      <div class="header">
+        <h3>{{ note ? "Edit Note" : "New Note" }}</h3>
+        <button class="icon" @click="$emit('close')">✕</button>
       </div>
 
-      <div style="display:flex; flex-direction:column; gap:10px;">
-        <input class="input" v-model="local.title" placeholder="Note title" maxlength="120" />
-        <textarea
-          class="input"
-          v-model="local.content"
-          placeholder="Write your note..."
-          rows="10"
-          style="resize:vertical; min-height:180px;"
-        />
-        <div v-if="error" style="font-size:13px; color:rgba(255,120,140,0.95);">
-          {{ error }}
-        </div>
+      <input
+        class="input"
+        v-model="title"
+        placeholder="Title"
+      />
 
-        <div style="display:flex; gap:10px; justify-content:flex-end; flex-wrap:wrap;">
-          <button class="btn" @click="close" :disabled="saving">Cancel</button>
-          <button class="btn primary" @click="submit" :disabled="saving">
-            {{ saving ? "Saving..." : (isEdit ? "Update Note" : "Create Note") }}
-          </button>
-        </div>
+      <textarea
+        class="textarea"
+        v-model="content"
+        placeholder="Content"
+        rows="8"
+      />
+
+      <div class="actions">
+        <button class="btn" @click="$emit('close')" :disabled="saving">
+          Cancel
+        </button>
+        <button
+          class="btn primary"
+          :disabled="saving"
+          @click="submit"
+        >
+          {{ saving ? "Saving..." : "Save" }}
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { computed, reactive, watch } from "vue";
+import { ref, watch } from "vue";
 
 const props = defineProps({
-  open: { type: Boolean, default: false },
-  note: { type: Object, default: null },
-  saving: { type: Boolean, default: false }
+  open: Boolean,
+  note: Object,
+  saving: Boolean
 });
 
-const emit = defineEmits(["close", "submit"]);
+const emit = defineEmits(["submit", "close"]);
 
-const local = reactive({ title: "", content: "" });
-const error = reactive({ msg: "" });
-
-const isEdit = computed(() => !!props.note?.id);
-const modeTitle = computed(() => (isEdit.value ? "Edit Note" : "New Note"));
+const title = ref("");
+const content = ref("");
 
 watch(
-  () => props.open,
-  (v) => {
-    if (v) {
-      local.title = props.note?.title ?? "";
-      local.content = props.note?.content ?? "";
-      error.msg = "";
-    }
-  }
+  () => props.note,
+  (n) => {
+    title.value = n?.title || "";
+    content.value = n?.content || "";
+  },
+  { immediate: true }
 );
 
-function close() {
-  if (!props.saving) emit("close");
-}
-
 function submit() {
-  const title = (local.title || "").trim();
-  const content = (local.content || "").trim();
-  if (!title) return (error.msg = "Title is required.");
-  if (!content) return (error.msg = "Content is required.");
-
-  error.msg = "";
-  emit("submit", { title, content });
+  emit("submit", {
+    title: title.value,
+    content: content.value
+  });
 }
 </script>
 
-<script>
-export default {
-  computed: {
-    error() {
-      return this.$.setupState?.error?.msg;
-    }
-  }
-};
-</script>
+<style scoped>
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.modal {
+  background: #111827;
+  padding: 20px;
+  border-radius: 14px;
+  width: 520px;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 16px;
+}
+</style>
