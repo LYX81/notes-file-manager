@@ -28,7 +28,7 @@
           <input
             class="input search-input"
             v-model="query"
-            placeholder="Search notes..."
+            placeholder=" Search notes..."
           />
         </div>
 
