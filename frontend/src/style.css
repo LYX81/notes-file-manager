@@ -1,25 +1,18 @@
 :root {
   --bg: #0b1220;
-  --bg-soft: rgba(255, 255, 255, 0.06);
-  --card: rgba(255, 255, 255, 0.08);
-  --card-strong: rgba(255, 255, 255, 0.12);
-  --text: rgba(255, 255, 255, 0.95);
-  --muted: rgba(255, 255, 255, 0.6);
-  --border: rgba(255, 255, 255, 0.15);
-
-  --primary: linear-gradient(135deg, #5b8dff, #b452ff);
-  --danger: #ff4d67;
-
-  --radius: 16px;
-  --shadow: 0 20px 50px rgba(0,0,0,0.45);
+  --glass: rgba(255,255,255,0.08);
+  --glass-strong: rgba(255,255,255,0.12);
+  --border: rgba(255,255,255,0.16);
+  --text: rgba(255,255,255,0.95);
+  --muted: rgba(255,255,255,0.6);
+  --primary: linear-gradient(135deg,#5b8dff,#b452ff);
+  --danger: #ff4d6d;
+  --radius: 14px;
+  --shadow: 0 20px 40px rgba(0,0,0,0.4);
 }
 
 * {
   box-sizing: border-box;
-}
-
-html, body {
-  height: 100%;
 }
 
 body {
@@ -27,20 +20,19 @@ body {
   font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
   color: var(--text);
   background:
-    radial-gradient(1200px 800px at 10% 10%, rgba(91,141,255,0.35), transparent 55%),
-    radial-gradient(1000px 700px at 90% 25%, rgba(180,82,255,0.28), transparent 55%),
-    radial-gradient(900px 650px at 50% 95%, rgba(34,211,238,0.18), transparent 60%),
+    radial-gradient(900px 600px at 10% 10%, rgba(91,141,255,.35), transparent 60%),
+    radial-gradient(900px 600px at 90% 30%, rgba(180,82,255,.25), transparent 60%),
     var(--bg);
 }
 
-/* Layout */
 .container {
   max-width: 1100px;
-  margin: 0 auto;
-  padding: 28px 18px 60px;
+  margin: auto;
+  padding: 28px 20px 60px;
 }
 
-/* Header */
+/* ---------- Top bar ---------- */
+
 .topbar {
   display: flex;
   justify-content: space-between;
@@ -73,106 +65,17 @@ h1 {
   color: var(--muted);
 }
 
-/* Actions */
-.actions {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
+/* ---------- Inputs & Buttons ---------- */
 
-.input {
-  min-width: 220px;
-  padding: 10px 14px;
+.input,
+textarea {
+  width: 100%;
+  padding: 12px 14px;
   border-radius: 12px;
   border: 1px solid var(--border);
-  background: var(--bg-soft);
+  background: rgba(255,255,255,0.06);
   color: var(--text);
   outline: none;
-}
-
-/* Buttons */
-.btn {
-  padding: 10px 14px;
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  background: var(--bg-soft);
-  color: var(--text);
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.btn:hover {
-  transform: translateY(-1px);
-  background: var(--card-strong);
-}
-
-.btn.primary {
-  border: none;
-  background: var(--primary);
-}
-
-.btn.danger {
-  border: none;
-  background: var(--danger);
-}
-
-/* Grid */
-.grid {
-  margin-top: 20px;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 14px;
-}
-
-/* Card */
-.card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 16px;
-  backdrop-filter: blur(14px);
-  box-shadow: var(--shadow);
-}
-
-.card h3 {
-  margin: 0 0 6px;
-}
-
-/* Empty state */
-.empty {
-  grid-column: 1 / -1;
-  text-align: center;
-  padding: 40px 20px;
-  border: 1px dashed var(--border);
-  border-radius: var(--radius);
-  color: var(--muted);
-}
-
-/* Modal overlay */
-.modal-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.55);
-  backdrop-filter: blur(6px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-/* Modal */
-.modal {
-  width: 100%;
-  max-width: 520px;
-  background: linear-gradient(180deg, var(--card-strong), var(--card));
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow);
-  padding: 20px;
-}
-
-.modal h2 {
-  margin-top: 0;
 }
 
 textarea {
@@ -180,24 +83,90 @@ textarea {
   min-height: 120px;
 }
 
-/* Footer buttons */
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.08);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.btn.primary {
+  background: var(--primary);
+  border: none;
+}
+
+.btn.danger {
+  background: rgba(255,77,109,0.2);
+  border-color: rgba(255,77,109,0.4);
+}
+
+/* ---------- Grid ---------- */
+
+.grid {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill,minmax(280px,1fr));
+  gap: 14px;
+}
+
+.card {
+  background: linear-gradient(180deg,var(--glass-strong),var(--glass));
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+}
+
+/* ---------- Modal ---------- */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+.modal {
+  width: min(520px, 92vw);
+  background: linear-gradient(180deg,var(--glass-strong),var(--glass));
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+
+.modal h2 {
+  margin: 0 0 14px;
+}
+
 .modal-actions {
+  margin-top: 14px;
   display: flex;
   justify-content: flex-end;
   gap: 10px;
-  margin-top: 14px;
 }
 
-/* Toast */
+/* ---------- Toast ---------- */
+
 .toast {
   position: fixed;
-  bottom: 18px;
+  bottom: 24px;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(0,0,0,0.65);
-  border: 1px solid var(--border);
+  background: rgba(0,0,0,0.6);
   padding: 10px 14px;
   border-radius: 12px;
-  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
   font-size: 13px;
 }

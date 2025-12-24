@@ -1,27 +1,15 @@
 <template>
   <div class="card">
-    <h3 class="title">{{ note.title }}</h3>
+    <h3>{{ note.title }}</h3>
+    <p class="muted">{{ note.content }}</p>
 
-    <p class="content">
-      {{ note.content }}
-    </p>
-
-    <div class="actions">
-      <button class="btn" @click="$emit('edit', note)">
-        Edit
-      </button>
-      <button class="btn danger" @click="$emit('delete', note)">
-        Delete
-      </button>
+    <div style="display:flex;gap:8px;margin-top:10px;">
+      <button class="btn" @click="$emit('edit', note)">Edit</button>
+      <button class="btn danger" @click="$emit('delete', note)">Delete</button>
     </div>
   </div>
 </template>
 
 <script setup>
-defineProps({
-  note: {
-    type: Object,
-    required: true
-  }
-});
+defineProps({ note: Object });
 </script>
