@@ -51,7 +51,7 @@
     />
 
     <ConfirmDialog
-      :open="confirmOpen"
+      v-if="confirmOpen"
       :busy="deleting"
       title="Delete note?"
       :message="confirmMessage"
@@ -59,6 +59,7 @@
       @cancel="closeConfirm"
       @confirm="confirmDelete"
     />
+
 
     <div v-if="toast" class="toast">{{ toast }}</div>
   </div>
