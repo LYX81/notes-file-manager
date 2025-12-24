@@ -1,19 +1,47 @@
+<template>
+  <div v-if="open" class="overlay">
+    <div class="modal">
+      <h2>New Note</h2>
+
+      <input
+        class="input"
+        placeholder="Title"
+        v-model="title"
+      />
+
+      <textarea
+        class="textarea"
+        placeholder="Content"
+        v-model="content"
+      />
+
+      <div class="modal-actions">
+        <button class="btn ghost" @click="$emit('close')">Cancel</button>
+        <button class="btn primary" :disabled="saving" @click="submit">
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+</template>
+
 <script setup>
-import { watch, ref } from "vue";
+import { ref, watch } from "vue";
 
 const props = defineProps({
   open: Boolean,
   note: Object,
   saving: Boolean
 });
-const emit = defineEmits(["close", "submit"]);
+
+const emit = defineEmits(["submit", "close"]);
 
 const title = ref("");
 const content = ref("");
 
 watch(
   () => props.open,
-  (open) => {
+  open => {
     if (open) {
       title.value = props.note?.title || "";
       content.value = props.note?.content || "";
@@ -22,24 +50,9 @@ watch(
 );
 
 function submit() {
-  emit("submit", { title: title.value, content: content.value });
+  emit("submit", {
+    title: title.value.trim(),
+    content: content.value.trim()
+  });
 }
 </script>
-
-<template>
-  <div v-if="open" class="modal-backdrop">
-    <div class="modal">
-      <h3>New Note</h3>
-
-      <input v-model="title" placeholder="Title" />
-      <textarea v-model="content" placeholder="Content" />
-
-      <div class="actions">
-        <button class="btn ghost" @click="$emit('close')">Cancel</button>
-        <button class="btn primary" :disabled="saving" @click="submit">
-          {{ saving ? "Saving..." : "Save" }}
-        </button>
-      </div>
-    </div>
-  </div>
-</template>

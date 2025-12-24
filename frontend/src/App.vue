@@ -1,12 +1,13 @@
 <template>
   <div class="container">
-    <!-- Top Bar -->
-    <div class="topbar">
+    <!-- Header -->
+    <header class="topbar">
       <div class="brand">
         <div class="logo"></div>
         <div>
           <h1>Simple File Management (Notes)</h1>
-          <div class="subtitle">CRUD with Vue + Express + SQLite</div>
+          <p class="subtitle">CRUD with Vue + Express + SQLite</p>
+          <p class="status">{{ notes.length }} note(s) • API: {{ apiStatus }}</p>
         </div>
       </div>
 
@@ -20,32 +21,11 @@
           + New Note
         </button>
       </div>
-    </div>
+    </header>
 
-    <!-- Status -->
-    <div class="muted" style="margin-top:14px;">
-      <span v-if="loading">Loading notes...</span>
-      <span v-else>{{ filtered.length }} note(s)</span>
-      <span v-if="apiStatus" style="margin-left:10px;">
-        • API: {{ apiStatus }}
-      </span>
-    </div>
-
-    <!-- Notes Grid -->
-    <div class="grid">
-      <div
-        v-if="!loading && filtered.length === 0"
-        class="empty-state"
-      >
-        <div class="empty-card">
-          <h3>No notes yet</h3>
-          <p>Create your first note to get started.</p>
-          <button class="btn primary" @click="openCreate">
-            + Create your first note
-          </button>
-        </div>
-      </div>
-
+    <!-- Notes -->
+    <section class="grid">
+      <div v-if="!loading && filtered.length === 0" class="empty">
         <h3>No notes yet</h3>
         <p>Create your first note to get started.</p>
       </div>
@@ -57,9 +37,9 @@
         @edit="openEdit"
         @delete="askDelete"
       />
-    </div>
+    </section>
 
-    <!-- Create / Edit Modal -->
+    <!-- Modals -->
     <NoteModal
       :open="modalOpen"
       :note="selected"
@@ -68,39 +48,34 @@
       @submit="handleSubmit"
     />
 
-    <!-- Delete Confirmation -->
     <ConfirmDialog
       :open="confirmOpen"
-      :busy="deleting"
       title="Delete note?"
       :message="confirmMessage"
-      confirmText="Delete"
+      :busy="deleting"
       @cancel="closeConfirm"
       @confirm="confirmDelete"
     />
 
-    <!-- Toast -->
-    <div v-if="toast" class="toast">
-      {{ toast }}
-    </div>
+    <div v-if="toast" class="toast">{{ toast }}</div>
   </div>
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { api } from "./api";
 import NoteCard from "./components/NoteCard.vue";
 import NoteModal from "./components/NoteModal.vue";
 import ConfirmDialog from "./components/ConfirmDialog.vue";
 
 const notes = ref([]);
-const loading = ref(true);
+const loading = ref(false);
 const saving = ref(false);
 const deleting = ref(false);
 
 const query = ref("");
+const apiStatus = ref("offline");
 const toast = ref("");
-const apiStatus = ref("");
 
 const modalOpen = ref(false);
 const selected = ref(null);
@@ -109,29 +84,30 @@ const confirmOpen = ref(false);
 const toDelete = ref(null);
 
 const filtered = computed(() => {
-  const q = query.value.trim().toLowerCase();
-  if (!q) return notes.value;
-  return notes.value.filter(n =>
-    (n.title + n.content).toLowerCase().includes(q)
+  const q = query.value.toLowerCase();
+  return notes.value.filter(
+    n =>
+      n.title.toLowerCase().includes(q) ||
+      n.content.toLowerCase().includes(q)
   );
 });
 
 const confirmMessage = computed(() =>
   toDelete.value
     ? `This will permanently delete:\n\n"${toDelete.value.title}"`
-    : "Are you sure?"
+    : ""
 );
 
 function showToast(msg) {
   toast.value = msg;
-  setTimeout(() => (toast.value = ""), 2200);
+  setTimeout(() => (toast.value = ""), 2500);
 }
 
 async function fetchAll() {
   loading.value = true;
   try {
-    const health = await api.health();
-    apiStatus.value = health?.ok ? "online" : "offline";
+    await api.health();
+    apiStatus.value = "online";
     notes.value = await api.listNotes();
   } catch {
     apiStatus.value = "offline";
@@ -158,11 +134,13 @@ function closeModal() {
 async function handleSubmit(payload) {
   saving.value = true;
   try {
-    selected.value?.id
-      ? await api.updateNote(selected.value.id, payload)
-      : await api.createNote(payload);
-
-    showToast("Saved successfully ✅");
+    if (selected.value?.id) {
+      await api.updateNote(selected.value.id, payload);
+      showToast("Note updated ✅");
+    } else {
+      await api.createNote(payload);
+      showToast("Note created ✅");
+    }
     await fetchAll();
     closeModal();
   } finally {
@@ -181,7 +159,6 @@ function closeConfirm() {
 }
 
 async function confirmDelete() {
-  if (!toDelete.value) return;
   deleting.value = true;
   try {
     await api.deleteNote(toDelete.value.id);

@@ -1,12 +1,7 @@
-<script setup>
-defineProps({ note: Object });
-defineEmits(["edit", "delete"]);
-</script>
-
 <template>
   <div class="card">
-    <h4>{{ note.title }}</h4>
-    <p class="muted">{{ note.content }}</p>
+    <h3>{{ note.title }}</h3>
+    <p class="content">{{ note.content }}</p>
 
     <div class="card-actions">
       <button class="btn ghost" @click="$emit('edit', note)">Edit</button>
@@ -14,3 +9,7 @@ defineEmits(["edit", "delete"]);
     </div>
   </div>
 </template>
+
+<script setup>
+defineProps({ note: Object });
+</script>
